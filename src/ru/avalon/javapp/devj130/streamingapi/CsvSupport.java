@@ -4,7 +4,9 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CsvSupport {
     private static final char SEP = ',';
@@ -72,10 +74,38 @@ public class CsvSupport {
                 }
                 out.write(cellHandler((String) row[row.length - 1]));
                 if (i < data.length - 1)
-                out.write("\n");
+                    out.write("\n");
             }
         }
     }
+
+    public static void writeCsv(File target, String[][] rows) throws IOException {
+        Map<Integer, Integer> cellLengthCount = new HashMap<>();
+        String[] firstRow = rows[0];
+        for (int i = 0; i < firstRow.length; i++) {
+            cellLengthCount.put(i, firstRow[i].length());
+        }
+        for (int i = 0; i < rows.length; i++) {
+            String[] row = rows[i];
+            for (int j = 0; j < row.length; j++) {
+                if (row[j].length() != cellLengthCount.get(j))
+                    throw new FileFormatException("Line " + row[j] + ": length mismatch");
+            }
+        }
+        try (FileWriter out = new FileWriter(target)) {
+            for (int i = 0; i < rows.length; i++) {
+                String[] row = rows[i];
+                for (int j = 0; j < row.length - 1; j++) {
+                    out.write(cellHandler(row[j]));
+                    out.write(",");
+                }
+                out.write(cellHandler(row[row.length - 1]));
+                if (i < rows.length - 1)
+                    out.write("\n");
+            }
+        }
+    }
+
     private static String cellHandler(String s) {
         if (s == null)
             return "";
