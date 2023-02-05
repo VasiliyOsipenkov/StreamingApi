@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 
 public class CsvSupport {
     private static final char SEP = ',';
@@ -26,6 +28,16 @@ public class CsvSupport {
             }
         }
         return res.toArray(new String[0][]);
+    }
+
+    public static <T> T[] readCsv(File file, Function<String[], T> convertor,
+                                  IntFunction<T[]> arrayBuilder) throws IOException {
+        String[][] data = readCsv(file);
+        T[] res = arrayBuilder.apply(data.length);
+        for (int i = 0; i < res.length; i++) {
+            res[i] = convertor.apply(data[i]);
+        }
+        return res;
     }
 
     private static String[] parseLine(String s) {
