@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -46,23 +47,16 @@ public class Main {
             Planes[] importPlanes = Arrays.stream(planes)
                     .filter(g -> !g.getType().equals("SU95"))
                     .toArray(Planes[] :: new);
-            String[][] outputPlanes = new String[importPlanes.length][3];
-            for (int i = 0; i < outputPlanes.length; i++) {
-                outputPlanes[i][0] = importPlanes[i].getRegistrationNumber();
-                outputPlanes[i][1] = importPlanes[i].getType();
-                outputPlanes[i][2] = importPlanes[i].getCommissioningDate().toString();
-            }
-            CsvSupport.writeCsv(new File("rep_fp.txt"), outputPlanes);
+            //CsvSupport.writeCsv(new File("rep_fp.txt"), importPlanes);
             //2. Сохраните в файл «rep_gr.txt» все данные о самолётах, о рейсах которых нет данных.
-            String[] registeredFlights = new String[routes.length];
+            ArrayList<String> registeredFlights = new ArrayList<>();
             for (int i = 0; i < routes.length; i++) {
-                registeredFlights[i] = routes[i].getRegistrationNumber();
+                registeredFlights.add(routes[i].getRegistrationNumber());
             }
             Planes[] outNoFlights = Arrays.stream(planes)
-                    .filter(g ->g.getRegistrationNumber())
+                    .filter(g ->!registeredFlights.contains(g.getRegistrationNumber()))
                     .toArray(Planes[] :: new);
-            /* Sring[] outNoFlights = Arrays.stream(routes)
-                    .collect(Collectors.toList().toString());*/
+            //CsvSupport.writeCsv(new File("rep_gr.txt"), outNoFlights);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

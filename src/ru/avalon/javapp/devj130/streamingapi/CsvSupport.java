@@ -1,12 +1,12 @@
 package ru.avalon.javapp.devj130.streamingapi;
 
+import ru.avalon.javapp.devj130.streamingapi.Models.Planes;
+import ru.avalon.javapp.devj130.streamingapi.Models.Routes;
+
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
@@ -118,6 +118,35 @@ public class CsvSupport {
         }
     }
 
+    public static void writeCsv(File target, Collection<String[]> rows) throws IOException {
+        writeCsv(target, (String[][]) rows.toArray());
+    }
+
+    public static void writeCsv(File target, Object[] items, Function t) throws IOException {
+        String[][] output = new String[][];
+    }
+
+    private static String[][] planesSupport(Planes[] items) {
+        String[][] output = new String[items.length][3];
+        for (int i = 0; i < items.length; i++) {
+            output[i][0] = items[i].getRegistrationNumber();
+            output[i][1] = items[i].getType();
+            output[i][2] = items[i].getCommissioningDate().toString();
+        }
+        return output;
+    }
+
+    private static String[][] routesSupport(Routes[] items) {
+        String[][] output = new String[items.length][3];
+        for (int i = 0; i < items.length; i++) {
+            output[i][0] = items[i].getFlightDate().toString();
+            output[i][1] = items[i].getRegistrationNumber();
+            output[i][2] = items[i].getDepartureAirport();
+            output[i][4] = items[i].getArrivalAirport();
+        }
+        return output;
+    }
+
     private static String cellHandler(String s) {
         if (s == null)
             return "";
@@ -160,4 +189,5 @@ public class CsvSupport {
         }
         return columnClass;
     }
+
 }
