@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,7 +25,6 @@ public class Main {
 сохраните их в массивы.
 Используя методы Streaming API, выведите данные, отвечающие на следующие запросы. Если
 требуется, сохраните данные с результатом выполнения запроса в CSV-файл при помощи реализованного вами метода:
-2. Сохраните в файл «rep_gr.txt» все данные о самолётах, о рейсах которых нет данных.
 3. Выведите регистрационные номера самолётов, бывавших в аэропорту Санкт-Петербурга
 («LED»).
 4. Выведите регистрационные номера самолётов типа «B737», не бывавших в аэропорту
@@ -47,8 +47,8 @@ public class Main {
             Planes[] importPlanes = Arrays.stream(planes)
                     .filter(g -> !g.getType().equals("SU95"))
                     .toArray(Planes[] :: new);
-            //CsvSupport.writeCsv(new File("rep_fp.txt"), importPlanes);
-            //2. Сохраните в файл «rep_gr.txt» все данные о самолётах, о рейсах которых нет данных.
+            CsvSupport.writeCsv(new File("rep_fp.txt"), importPlanes, CsvSupport::planesSupport);
+            //2
             ArrayList<String> registeredFlights = new ArrayList<>();
             for (int i = 0; i < routes.length; i++) {
                 registeredFlights.add(routes[i].getRegistrationNumber());
@@ -56,7 +56,8 @@ public class Main {
             Planes[] outNoFlights = Arrays.stream(planes)
                     .filter(g ->!registeredFlights.contains(g.getRegistrationNumber()))
                     .toArray(Planes[] :: new);
-            //CsvSupport.writeCsv(new File("rep_gr.txt"), outNoFlights);
+            CsvSupport.writeCsv(new File("rep_gr.txt"), outNoFlights, CsvSupport::planesSupport);
+            //3. Выведите регистрационные номера самолётов, бывавших в аэропорту Санкт-Петербурга («LED»).
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

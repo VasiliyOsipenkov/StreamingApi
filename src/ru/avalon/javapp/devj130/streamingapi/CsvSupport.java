@@ -118,15 +118,20 @@ public class CsvSupport {
         }
     }
 
-    public static void writeCsv(File target, Collection<String[]> rows) throws IOException {
+    public static void writeCsv(File target, List<String[]> rows) throws IOException {
         writeCsv(target, (String[][]) rows.toArray());
     }
 
-    public static void writeCsv(File target, Object[] items, Function t) throws IOException {
-        String[][] output = new String[][];
+    public static <T> void writeCsv(File target, T[] items, Function<T[], String[][]> q) throws IOException {
+        writeCsv(target, q.apply(items));
     }
 
-    private static String[][] planesSupport(Planes[] items) {
+    public static <T> void writeCsv(File target, Class<T> items, Function<T[], String[][]> q) throws IOException {
+        //String[][] output = q.apply(items);
+        writeCsv(target, q.apply(items));
+    }
+
+    public static String[][] planesSupport(Planes[] items) {
         String[][] output = new String[items.length][3];
         for (int i = 0; i < items.length; i++) {
             output[i][0] = items[i].getRegistrationNumber();
@@ -136,7 +141,7 @@ public class CsvSupport {
         return output;
     }
 
-    private static String[][] routesSupport(Routes[] items) {
+    public static String[][] routesSupport(Routes[] items) {
         String[][] output = new String[items.length][3];
         for (int i = 0; i < items.length; i++) {
             output[i][0] = items[i].getFlightDate().toString();
