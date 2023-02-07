@@ -126,9 +126,8 @@ public class CsvSupport {
         writeCsv(target, q.apply(items));
     }
 
-    public static <T> void writeCsv(File target, Class<T> items, Function<T[], String[][]> q) throws IOException {
-        //String[][] output = q.apply(items);
-        writeCsv(target, q.apply(items));
+    public static <T> void writeCsv(File target, List<T> items, Function<T[], String[][]> q) throws IOException {
+        writeCsv(target, q.apply((T[]) items.toArray()));
     }
 
     public static String[][] planesSupport(Planes[] items) {

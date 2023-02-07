@@ -15,18 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
-    /*Методы через параметр принимают имя файла, в который будут сохраняться данные. В случае
-ошибки записи (ошибка ввода/вывода и т.п.) должно выбрасываться исключение. При сохранении данных в файл
-нужно помнить, что разделитель ячеек и двойная
-кавычка в значении ячейки
-должны экранироваться — значение должно быть заключено в двойные кавычки, а содержащиеся в значении
-двойные кавычки должны быть удвоены.
-При помощи имеющихся методов чтения CSV-файла прочитайте файлы с тестовыми данными и
-сохраните их в массивы.
-Используя методы Streaming API, выведите данные, отвечающие на следующие запросы. Если
-требуется, сохраните данные с результатом выполнения запроса в CSV-файл при помощи реализованного вами метода:
-3. Выведите регистрационные номера самолётов, бывавших в аэропорту Санкт-Петербурга
-(«LED»).
+    /*
 4. Выведите регистрационные номера самолётов типа «B737», не бывавших в аэропорту
 Мурманска («MMK»).
 5. Выведите самую раннюю дату ввода самолёта в эксплуатацию.
@@ -57,7 +46,20 @@ public class Main {
                     .filter(g ->!registeredFlights.contains(g.getRegistrationNumber()))
                     .toArray(Planes[] :: new);
             CsvSupport.writeCsv(new File("rep_gr.txt"), outNoFlights, CsvSupport::planesSupport);
-            //3. Выведите регистрационные номера самолётов, бывавших в аэропорту Санкт-Петербурга («LED»).
+            //3
+            Arrays.stream(routes)
+                    .filter(g -> g.getArrivalAirport().equals("LED") || g.getDepartureAirport().equals("LED"))
+                    .map(g -> g.getRegistrationNumber())
+                    .distinct()
+                    .forEach(x -> System.out.println(x));
+            System.out.println();
+            //4. Выведите регистрационные номера самолётов типа «B737», не бывавших в аэропорту Мурманска («MMK»).
+            Arrays.stream(planes)
+                    .filter(g -> g.getType().equals("B737"))
+                    .map(g -> g.getRegistrationNumber())
+                    .filter(Arrays.stream(routes)
+                            .map(h ->h.getRegistrationNumber().equals()))
+                    .forEach(x -> System.out.println(x));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
