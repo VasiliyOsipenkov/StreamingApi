@@ -45,7 +45,7 @@ public class Main {
                     .distinct()
                     .forEach(x -> System.out.println(x));
             System.out.println();
-            //4. Выведите регистрационные номера самолётов типа «B737», не бывавших в аэропорту Мурманска («MMK»).
+            //4
             Planes[] b737Type = Arrays.stream(planes)
                     .filter(g->g.getType().equals("B737"))
                     .toArray(Planes[]::new);
@@ -61,9 +61,25 @@ public class Main {
                     .filter(g -> g.getType().equals("B737"))
                     .map(g -> g.getRegistrationNumber())
                     .forEach(System.out::println);
-            //5. Выведите самую раннюю дату ввода самолёта в эксплуатацию.
-            //6. Выведите все данные о самолёте, введённым в эксплуатацию последним.
-            //7. Сохраните в файл «rep_same.txt» все данные о рейсах, у которых аэропорт отправления и аэропорт назначения совпадают.
+            System.out.println();
+            //5
+            LocalDate earlDateCommission = Arrays.stream(planes)
+                    .map(g -> g.getCommissioningDate())
+                    .min((d1, d2) ->d1.compareTo(d2) )
+                    .get();
+            System.out.println(earlDateCommission);
+            System.out.println();
+            //6
+            Planes latestPlane = Arrays.stream(planes)
+                    .max((d1, d2) -> d1.getRegistrationNumber().compareTo(d2.getRegistrationNumber()))
+                    .get();
+            System.out.println(latestPlane);
+            System.out.println();
+            //7
+            Routes[] overlappingRoutes = Arrays.stream(routes)
+                    .filter(g -> g.getArrivalAirport().equals(g.getDepartureAirport()))
+                    .toArray(Routes[]::new);
+            CsvSupport.writeCsv(new File("rep_same.txt"), overlappingRoutes, CsvSupport::routesSupport);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

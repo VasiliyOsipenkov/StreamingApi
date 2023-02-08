@@ -144,12 +144,12 @@ public class CsvSupport {
     }
 
     public static String[][] routesSupport(Routes[] items) {
-        String[][] output = new String[items.length][3];
+        String[][] output = new String[items.length][4];
         for (int i = 0; i < items.length; i++) {
             output[i][0] = items[i].getFlightDate().toString();
             output[i][1] = items[i].getRegistrationNumber();
             output[i][2] = items[i].getDepartureAirport();
-            output[i][4] = items[i].getArrivalAirport();
+            output[i][3] = items[i].getArrivalAirport();
         }
         return output;
     }
