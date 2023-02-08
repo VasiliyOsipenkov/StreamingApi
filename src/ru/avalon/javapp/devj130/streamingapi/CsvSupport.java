@@ -126,10 +126,13 @@ public class CsvSupport {
         writeCsv(target, q.apply(items));
     }
 
-    public static <T> void writeCsv(File target, List<T> items, Function<T[], String[][]> q) throws IOException {
-        writeCsv(target, q.apply((T[]) items.toArray()));
+    public static <T> void writeCsv(File target, List<T> items, Function<List<T>, String[][]> q) throws IOException {
+        writeCsv(target, q.apply(items));
     }
 
+    public static String[][] planesSupport(List<Planes> items) {
+        return planesSupport(items.toArray(Planes[] :: new));
+    }
     public static String[][] planesSupport(Planes[] items) {
         String[][] output = new String[items.length][3];
         for (int i = 0; i < items.length; i++) {

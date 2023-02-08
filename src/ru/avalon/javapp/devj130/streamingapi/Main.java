@@ -9,20 +9,13 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
-    /*
-4. Выведите регистрационные номера самолётов типа «B737», не бывавших в аэропорту
-Мурманска («MMK»).
-5. Выведите самую раннюю дату ввода самолёта в эксплуатацию.
-6. Выведите все данные о самолёте, введённым в эксплуатацию последним.
-7. Сохраните в файл «rep_same.txt» все данные о рейсах, у которых аэропорт отправления и
-аэропорт назначения совпадают.
-*/
     public static void main(String[] args) {
         try {
             Planes[] planes = CsvSupport.readCsv(new File("planes-planes.csv"),
@@ -38,13 +31,12 @@ public class Main {
                     .toArray(Planes[] :: new);
             CsvSupport.writeCsv(new File("rep_fp.txt"), importPlanes, CsvSupport::planesSupport);
             //2
-            ArrayList<String> registeredFlights = new ArrayList<>();
-            for (int i = 0; i < routes.length; i++) {
-                registeredFlights.add(routes[i].getRegistrationNumber());
-            }
-            Planes[] outNoFlights = Arrays.stream(planes)
-                    .filter(g ->!registeredFlights.contains(g.getRegistrationNumber()))
-                    .toArray(Planes[] :: new);
+            List<String> registeredFlights = Arrays.stream(routes)
+                    .map(g -> g.getRegistrationNumber())
+                    .toList();
+            List<Planes> outNoFlights = Arrays.stream(planes)
+                    .filter(g -> !registeredFlights.contains(g.getRegistrationNumber()))
+                    .toList();
             CsvSupport.writeCsv(new File("rep_gr.txt"), outNoFlights, CsvSupport::planesSupport);
             //3
             Arrays.stream(routes)
@@ -54,12 +46,24 @@ public class Main {
                     .forEach(x -> System.out.println(x));
             System.out.println();
             //4. Выведите регистрационные номера самолётов типа «B737», не бывавших в аэропорту Мурманска («MMK»).
-            Arrays.stream(planes)
+            Planes[] b737Type = Arrays.stream(planes)
+                    .filter(g->g.getType().equals("B737"))
+                    .toArray(Planes[]::new);
+            List<String> noVisitMMK = Arrays.stream(routes)
+                    .filter(g -> !(g.getArrivalAirport().equals("MMK") || g.getDepartureAirport().equals("MMK")))
+                    .map(h -> h.getRegistrationNumber())
+                    .toList();
+            Arrays.stream(b737Type)
+                    .filter(g -> noVisitMMK.contains(g.getRegistrationNumber()))
+                    .map(j -> j.getRegistrationNumber())
+                    .forEach(System.out::println);
+            outNoFlights.stream()//не летавший самолет тоже не посещал MMK
                     .filter(g -> g.getType().equals("B737"))
                     .map(g -> g.getRegistrationNumber())
-                    .filter(Arrays.stream(routes)
-                            .map(h ->h.getRegistrationNumber().equals()))
-                    .forEach(x -> System.out.println(x));
+                    .forEach(System.out::println);
+            //5. Выведите самую раннюю дату ввода самолёта в эксплуатацию.
+            //6. Выведите все данные о самолёте, введённым в эксплуатацию последним.
+            //7. Сохраните в файл «rep_same.txt» все данные о рейсах, у которых аэропорт отправления и аэропорт назначения совпадают.
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
