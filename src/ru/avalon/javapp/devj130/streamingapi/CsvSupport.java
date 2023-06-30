@@ -12,7 +12,7 @@ import java.util.function.IntFunction;
 
 public class CsvSupport {
     private static final char SEP = ',';
-    
+
     public static String[][] readCsv(File file) throws IOException {
         List<String[]> res = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(file))) {
