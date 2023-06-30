@@ -56,7 +56,7 @@ public class Main {
             Arrays.stream(b737Type)
                     .filter(g -> noVisitMMK.contains(g.getRegistrationNumber()))
                     .map(j -> j.getRegistrationNumber())
-                    .forEach(System.out::println);
+                    .distinct().forEach(System.out::println);
             outNoFlights.stream()//не летавший самолет тоже не посещал MMK
                     .filter(g -> g.getType().equals("B737"))
                     .map(g -> g.getRegistrationNumber())
